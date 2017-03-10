@@ -1,0 +1,21 @@
+table.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+input::-webkit-input-placeholder {
+color: re6e6e6 !important;
+}
+ 
+input:-moz-placeholder { /* Firefox 18- */
+color: e6e6e6 !important;  
+}
+ 
+input::-moz-placeholder {  /* Firefox 19+ */
+color: e6e6e6 !important;  
+}
+ 
+input:-ms-input-placeholder {  
+color: e6e6e6 !important;  
+}

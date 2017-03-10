@@ -1,2 +1,2 @@
-# twitter-app
-Twitter app designed with Flask (unfinished)
+# Week 6, Day 3
+Thursday, February 23, 2017
