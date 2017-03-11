@@ -1,10 +1,10 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, url_for
 from flaskext.mysql import MySQL
-from werkzeug import generate_password_hash, check_password_hash #Do I need this anymore?
+# from werkzeug import generate_password_hash, check_password_hash #Do I need this anymore?
 
 
 mysql = MySQL()
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 
 # MySQL configurations
@@ -20,9 +20,9 @@ def main():
 	return render_template('index.html')
 
 
-@app.route("/showHomePage")
+@app.route("/showUserPage")
 def showHomePage():
-	return render_template('home-page.html')
+	return render_template('user-page.html')
 
 
 #POST signup data to the signup method
