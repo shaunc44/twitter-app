@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request, url_for
+from flask import Flask, render_template, session, g, json, request, redirect, url_for, flash
 from flaskext.mysql import MySQL
 # from werkzeug import generate_password_hash, check_password_hash #Do I need this anymore?
 
@@ -15,18 +15,18 @@ app.config['MYSQL_DATABASE_USERNAME'] = 'shaunc44'
 mysql.init_app(app)
 
 
-@app.route("/")
+@app.route('/', methods = ['GET'])
 def main():
 	return render_template('index.html')
 
 
-@app.route("/showUserPage")
+@app.route('/showUserPage')
 def showHomePage():
 	return render_template('user-page.html')
 
 
 #POST signup data to the signup method
-@app.route("/signUp", methods = ['POST', 'GET'])
+@app.route('/signUp', methods = ['POST', 'GET'])
 def signUp():
 	try:
 		#read posted values from the UI
