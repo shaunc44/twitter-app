@@ -1,6 +1,5 @@
-#bootstrap-override table .center {
-	margin-left: auto;
-	margin-right: auto;
+.text-muted {
+	padding-top: 10px;
 }
 
 #bootstrap-override .container .jumbotron {
@@ -11,19 +10,19 @@
 	background: linear-gradient(to bottom right, blue, yellow) !important;
 }
 
-/*Styling for login (Username) placeholder*/
-input::-webkit-input-placeholder {
-color: re6e6e6 !important;
+#nerbs-title {
+	text-shadow: -1px 0 #9d9d9d, 0 1px #9d9d9d, 1px 0 #9d9d9d, 0 -1px #9d9d9d;
 }
- 
-input:-moz-placeholder { /* Firefox 18- */
-color: e6e6e6 !important;  
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
 }
- 
-input::-moz-placeholder {  /* Firefox 19+ */
-color: e6e6e6 !important;  
+
+#login {
+	text-align: center
 }
- 
-input:-ms-input-placeholder {  
-color: e6e6e6 !important;  
+
+#login-register {
+	margin-top: 1.5em
 }
