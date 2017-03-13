@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('#login-register').click(function(){
         $.ajax({
-            url: '/showHomePage',
+            url: '/showUserPage',
             data: $('form').serialize(),
             type: 'POST',
             success: function(response) {

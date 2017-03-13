@@ -6,7 +6,6 @@
     <title>Nerbs - A Twitter Clone</title>
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    <!-- <link rel="stylesheet" type="text/css" href="../static/css/index.css"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 
@@ -26,22 +25,13 @@
         </div>
 
         <div id="jumbotron" class="jumbotron">
-            <!--  <div id="jumbotron" class="jumbotron" style="background: linear-gradient(to bottom right, blue, yellow) !important;"> -->
             <h1 id="nerbs-title">Nerbs Twitter App</h1>
             <p class="lead"></p>
-            <!-- <p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Log In / Register</a> -->
             </p>
             <form>
-                <table class="center">
-                <tr><td><input id="login" placeholder="Username"></td></tr> 
-                <!--<tr><td><input style="text-align: center" id="login" / placeholder="Username"></td></tr> -->
-                </table>
-            </form>
-            <form action="showUserPage" method="get">
-                <button id="login-register" role="button">Login / Register</button><!-- 
-                <button id="login-register" style="margin-top: 1.5em" role="button">Login / Register</button> -->
-                <!-- <button style="margin-top: 1.5em" href="showUserPage" role="button">Login / Register</button> -->
-                <!-- <button style="margin-top: 1.5em" onclick="login(this);">Login / Register</button> -->
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="username" name="inputUsername" id="inputUsername" placeholder="Username" required>
+                <button id="login-register" type="button">Login / Register</button>
             </form>
         </div>
 
@@ -68,10 +58,13 @@
         </div>
 
         <footer class="footer">
-            <p>&copy; CoxDev,LLC 2017</p>
+            <p>&copy; CoxDev, LLC 2017</p>
         </footer>
 
     </div>
+
+    <script type="text/javascript" src="../static/js/login.js"></script>
+
 </body>
 
 </html>

@@ -9,41 +9,41 @@ app = Flask(__name__, static_url_path='/static')
 
 # MySQL configurations
 app.config['MYSQL_DATABASE_USERNAME'] = 'shaunc44'
-# app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
-# app.config['MYSQL_DATABASE_DB'] = 'BucketList'
-# app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
-
 
 @app.route('/', methods = ['GET'])
 def main():
 	return render_template('index.html')
 
-
+#Do I need this anymore?
 @app.route('/showUserPage')
-def showHomePage():
+def showUserPage():
 	return render_template('user-page.html')
 
 
+#1. Here you need to send/verify username to DB
+#2. If username exists retrieve user page and send user to user page
+#3. If username does NOT exist send to blank user page
 #POST signup data to the signup method
-@app.route('/signUp', methods = ['POST', 'GET'])
-def signUp():
+@app.route('/logIn', methods = ['POST', 'GET'])
+def logIn():
 	try:
-		#read posted values from the UI
-		_username = request.form['inputUserName']
-		# _email = request.form['inputEmail']
-		# _password = request.form['inputPassword']
+		_username = request.form['inputUsername']
 
-		# validate the received values
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		cursor.callproc('sp_createUser',(_username,))
+		data = cursor.fetchall()
+
+		if len(data) > 0:
+
+
 		# if _name and _email and _password:
 		if _username:
 			#Call MySQL
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			# _hashed_password = generate_password_hash(_password)
-			# print (_hashed_password)
-			cursor.callproc('sp_createUser2',(_name,_email,_hashed_password))
-			# cursor.callproc('sp_createUser2',(_name,_email,_hashed_password))
+			cursor.callproc('sp_createUser',(_username,))
 			data = cursor.fetchall()
 
 			if len(data) is 0:
@@ -58,6 +58,34 @@ def signUp():
 	else:
 		cursor.close()
 		conn.close()
+
+
+#POST signup data to the signup method
+# @app.route('/logIn', methods = ['POST', 'GET'])
+# def logIn():
+# 	try:
+# 		_username = request.form['inputUsername']
+
+# 		# if _name and _email and _password:
+# 		if _username:
+# 			#Call MySQL
+# 			conn = mysql.connect()
+# 			cursor = conn.cursor()
+# 			cursor.callproc('sp_createUser',(_username))
+# 			data = cursor.fetchall()
+
+# 			if len(data) is 0:
+# 				conn.commit()
+# 				return json.dumps({'message':'User created successfully !'})
+# 			else:
+# 				return json.dumps({'error':str(data[0])})
+# 		else:
+# 			return json.dumps({'html':'<span>Enter the required fields</span>'})
+# 	except Exception as e:
+# 		return json.dumps({'error':str(e)})
+# 	else:
+# 		cursor.close()
+# 		conn.close()
 
 
 if __name__ == "__main__":
