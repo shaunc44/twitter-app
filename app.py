@@ -50,7 +50,7 @@ def logIn():
 			#how to link valid user to `posts` table ???????
 		else:
 			return json.dumps({'html':'<span>Enter the required fields</span>'})
-	else:
+	finally:
 		cursor.close()
 		conn.close()
 

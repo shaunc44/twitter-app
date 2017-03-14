@@ -4,7 +4,11 @@ $(document).ready(function() {
             url: '/logIn',
             data: $('form').serialize(),
             type: 'POST',
-            /* should i change/delete the success: and error: messages ?? */
+            /* 
+            1. should i change/delete the success: and error: messages ?? 
+            2. maybe i need to POST ajax request to post new usernames and, 
+            3. a GET ajax request to get existing username and related posts
+            */
             success: function(response) {
                 console.log(response);
             },
