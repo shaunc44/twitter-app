@@ -18,12 +18,21 @@ def main():
 #Do I need this anymore?
 @app.route('/showUserPage')
 def showUserPage():
+	#add code here to show blank or existing user page????
 	return render_template('user-page.html')
 
 
-#1. Here you need to send/verify username to DB
-#2. If username exists retrieve user page and send user to user page
-#3. If username does NOT exist send to blank user page
+# MAYBE CREATE A NEW STORED PROCEDURE FOR THIS ????
+# 1. Verify username to `users` table of DB
+#	a. query `users` table of DB for username
+#	b. if username DOES NOT exists
+#		i.  add username to DB
+#		ii. send user to their blank user page
+#	c. username DOES exists
+#		i.  retrieve user posts from `posts` table of DB
+#		ii. send user to existing user page
+
+
 #POST signup data to the signup method
 @app.route('/logIn', methods = ['POST', 'GET'])
 def logIn():
@@ -32,32 +41,41 @@ def logIn():
 
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		cursor.callproc('sp_createUser',(_username,))
+		cursor.callproc('sp_createUser',(_username,)) #maybe change createUser to validateUser???
 		data = cursor.fetchall()
 
 		if len(data) > 0:
-
-
-		# if _name and _email and _password:
-		if _username:
-			#Call MySQL
-			conn = mysql.connect()
-			cursor = conn.cursor()
-			cursor.callproc('sp_createUser',(_username,))
-			data = cursor.fetchall()
-
-			if len(data) is 0:
-				conn.commit()
-				return json.dumps({'message':'User created successfully !'})
-			else:
-				return json.dumps({'error':str(data[0])})
+			session['user'] = data[0][0]
+			return redirect('/showUserPage')
+			#how to link valid user to `posts` table ???????
 		else:
 			return json.dumps({'html':'<span>Enter the required fields</span>'})
-	except Exception as e:
-		return json.dumps({'error':str(e)})
 	else:
 		cursor.close()
 		conn.close()
+
+
+		# if _name and _email and _password:
+	# 	if _username:
+	# 		#Call MySQL
+	# 		conn = mysql.connect()
+	# 		cursor = conn.cursor()
+	# 		cursor.callproc('sp_createUser',(_username,))
+	# 		data = cursor.fetchall()
+
+	# 		if len(data) is 0:
+	# 			conn.commit()
+	# 			return json.dumps({'message':'User created successfully !'})
+	# 		else:
+	# 			return json.dumps({'error':str(data[0])})
+	# 	else:
+	# 		return json.dumps({'html':'<span>Enter the required fields</span>'})
+	# except Exception as e:
+	# 	return json.dumps({'error':str(e)})
+	# else:
+	# 	cursor.close()
+	# 	conn.close()
+
 
 
 #POST signup data to the signup method
