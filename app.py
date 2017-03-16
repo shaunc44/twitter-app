@@ -5,21 +5,160 @@ from flaskext.mysql import MySQL
 
 mysql = MySQL()
 app = Flask(__name__, static_url_path='/static')
+app.secret_key = 'tobeornottobeasecretkey'
 
 
 # MySQL configurations
-app.config['MYSQL_DATABASE_USERNAME'] = 'shaunc44'
+app.config['MYSQL_DATABASE_USER'] = 'shaun'
+app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
+app.config['MYSQL_DATABASE_DB'] = 'twitter'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
+
+
+app.config['UPLOAD_FOLDER'] = 'static/Uploads'
+
 
 @app.route('/', methods = ['GET'])
 def main():
 	return render_template('index.html')
+
 
 #Do I need this anymore?
 @app.route('/showUserPage')
 def showUserPage():
 	#add code here to show blank or existing user page????
 	return render_template('user-page.html')
+
+
+# @app.route('/addPost', methods=['POST'])
+# def addPost():
+# 	# try:
+# 	if session.get('username'):
+# 		_title = request.form['inputTitle']
+# 		_description = request.form['inputDescription']
+# 		_username = session.get('username')
+# 		# if request.form.get('filePath') is None:
+# 		# 	_filePath = ''
+# 		# else:
+# 		# 	_filePath = request.form.get('filePath')
+
+# 		conn = mysql.connect()
+# 		cursor = conn.cursor()
+# 		cursor.callproc('sp_addPost',(_title,_description,_username))
+# 		data = cursor.fetchall()
+
+	# 		if len(data) is 0:
+	# 			conn.commit()
+	# 			# return render_template('user-page.html')
+	# 			return redirect('/addPost')
+	# 		else:
+	# 			return render_template('error.html',error = 'An error occurred!')
+	# 	else:
+	# 		return render_template('error.html',error = 'Unauthorized Access')
+	# except Exception as e:
+	# 	return render_template('error.html',error = str(e))
+	# else:
+	# 	cursor.close()
+	# 	conn.close()
+
+
+@app.route('/addPost', methods=['POST'])
+def addPost():
+	try:
+		if session.get('username'):
+			_title = request.form['inputTitle']
+			_text = request.form['inputDescription']
+			_username = session.get('username')
+			_user_id = session.get('user_id')
+
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			# _user
+			cursor.callproc('sp_addPost',(_user_id, _title, _text))
+			data = cursor.fetchall()
+
+			if len(data) is 0:
+				conn.commit()
+				# return render_template('user-page.html')
+				return redirect('/showUserPage')
+			else:
+				return render_template('error.html',error = 'An error occurred!')
+		else:
+			return render_template('error.html',error = 'Unauthorized Access')
+	except Exception as e:
+		return render_template('error.html',error = str(e))
+	else:
+		cursor.close()
+		conn.close()
+
+
+
+# ORIGINAL
+# @app.route('/addPost', methods=['POST'])
+# def addPost():
+# 	try:
+# 		if session.get('username'):
+# 			_title = request.form['inputTitle']
+# 			_description = request.form['inputDescription']
+# 			_username = session.get('username')
+# 			if request.form.get('filePath') is None:
+# 				_filePath = ''
+# 			else:
+# 				_filePath = request.form.get('filePath')
+
+# 			conn = mysql.connect()
+# 			cursor = conn.cursor()
+# 			cursor.callproc('sp_addPost',(_title,_description,_username,_filePath))
+# 			data = cursor.fetchall()
+
+# 			if len(data) is 0:
+# 				conn.commit()
+# 				# return render_template('user-page.html')
+# 				return redirect('/showUserPage')
+# 			else:
+# 				return render_template('error.html',error = 'An error occurred!')
+# 		else:
+# 			return render_template('error.html',error = 'Unauthorized Access')
+# 	except Exception as e:
+# 		return render_template('error.html',error = str(e))
+# 	else:
+# 		cursor.close()
+# 		conn.close()
+
+
+#This just enters user info into the DB
+@app.route('/signUp', methods=['POST','GET'])
+def signUp():
+	try:
+		_username = request.form['inputUsername']
+
+		# validate the received values
+		if _username:
+			# All Good, let's call MySQL
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.callproc('sp_createUser',(_username,))
+			data = cursor.fetchall()
+			session['username'] = data[0][0]
+			session['user_id'] = cursor.lastrowid
+
+			#this is not right
+			if len(data) is 0:
+				conn.commit()
+				return redirect('/showUserPage')
+			elif len(data) > 0:
+				return redirect('/showUserPage')
+			else:
+				return json.dumps({'error':str(data[0])})
+		else:
+			return json.dumps({'html':'<span>Enter the required fields</span>'})
+	except Exception as e:
+		return json.dumps({'error':str(e)})
+	else:
+		cursor.close()
+		conn.close()
+
 
 
 # MAYBE CREATE A NEW STORED PROCEDURE FOR THIS ????
@@ -34,25 +173,56 @@ def showUserPage():
 
 
 #POST signup data to the signup method
-@app.route('/logIn', methods = ['POST', 'GET'])
-def logIn():
-	try:
-		_username = request.form['inputUsername']
+# @app.route('/logIn', methods = ['POST'])
+# def logIn():
 
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.callproc('sp_createUser',(_username,)) #maybe change createUser to validateUser???
-		data = cursor.fetchall()
+# 	_username = request.form['inputUsername']
 
-		if len(data) > 0:
-			session['user'] = data[0][0]
-			return redirect('/showUserPage')
-			#how to link valid user to `posts` table ???????
-		else:
-			return json.dumps({'html':'<span>Enter the required fields</span>'})
-	finally:
-		cursor.close()
-		conn.close()
+# 	conn = mysql.connect()
+# 	cursor = conn.cursor()
+# 	cursor.callproc('sp_createUser',(_username,))
+# 	#maybe change createUser to validateUser???
+# 	data = cursor.fetchall()
+
+# 	if len(data) is 0:
+# 		conn.commit()
+# 		return json.dumps({'message':'User created successfully !'})
+# 	elif len(data) > 0:
+# 		session['user'] = data[0][0]
+# 		return redirect('/showUserPage')
+# 		#how to link valid user to `posts` table ???????
+# 	else:
+# 		return json.dumps({'html':'<span>Enter the required fields</span>'})
+
+# 	cursor.close()
+# 	conn.close()
+
+
+
+#EXAMPLE #2
+#POST signup data to the signup method
+# @app.route('/logIn', methods = ['POST', 'GET'])
+# def logIn():
+# 	try:
+# 		_username = request.form['inputUsername']
+
+# 		conn = mysql.connect()
+# 		cursor = conn.cursor()
+# 		cursor.callproc('sp_createUser',(_username,)) #maybe change createUser to validateUser???
+# 		data = cursor.fetchall()
+
+# 		if len(data) > 0:
+# 			session['user'] = data[0][0]
+# 			return redirect('/showUserPage')
+# 			#how to link valid user to `posts` table ???????
+# 		else:
+# 			return json.dumps({'html':'<span>Enter the required fields</span>'})
+# 	finally:
+# 		cursor.close()
+# 		conn.close()
+
+
+
 
 
 		# if _name and _email and _password:
@@ -78,6 +248,8 @@ def logIn():
 
 
 
+
+#EXAMPLE #1
 #POST signup data to the signup method
 # @app.route('/logIn', methods = ['POST', 'GET'])
 # def logIn():

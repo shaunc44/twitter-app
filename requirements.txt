@@ -64,12 +64,16 @@ ALTER TABLE `posts` ADD FOREIGN KEY (user_id) REFERENCES `users` (`user_id`);
 -- ('','','','','');
 
 
+SELECT post FROM tweets WHERE user=1;  // to link post to user
+
+
+
 ***************************************************************************
 **********  STORED PROCEDURE TO ADD/CHECK USERNAME TO DATABASE  ***********
 ***************************************************************************
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_createUser`(
+CREATE DEFINER=`shaun`@`localhost` PROCEDURE `sp_createUser`(
     IN p_username VARCHAR(25)
 )
 BEGIN
@@ -92,15 +96,15 @@ DELIMITER ;
 
 !!!! MAY OR MAY NOT NEED THIS !!!!! the `if select exists` above may do this???
 ***************************************************************************
-************  STORED PROCEDURE VALIDATE USERNAME TO DATABASE  *************
+***********  STORED PROCEDURE TO VALIDATE USERNAME TO DATABASE  ************
 ***************************************************************************
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_validateLogin`(
+CREATE DEFINER=`shaun`@`localhost` PROCEDURE `sp_validateLogin`(
 IN p_username VARCHAR(20)
 )
 BEGIN
-    select * from tbl_user where user_username = p_username;
+    select * from tbl_user where username = p_username;
 END$$
 DELIMITER ;
 
@@ -109,27 +113,49 @@ DELIMITER ;
 ***************  STORED PROCEDURE TO ADD POST TO DATABASE  ****************
 ***************************************************************************
 
+USE `twitter`;
+DROP procedure IF EXISTS `twitter`.`sp_addPost`;
+
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_createPost`(
-    IN p_date DATE,
+USE `twitter`$$
+CREATE DEFINER=`shaun`@`localhost` PROCEDURE `sp_addPost`(
+    IN p_user_id BIGINT,
     IN p_title VARCHAR(50),
     IN p_text VARCHAR(100)
 )
 BEGIN
     insert into posts
     (
+        user_id,
         date,
         title,
         text
     )
     values
     (
+        p_user_id,
         NOW(),
         p_title,
         p_text
     );
-
 END$$
+
 DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

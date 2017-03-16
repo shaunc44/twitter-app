@@ -7,13 +7,12 @@
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/user-page.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
 </head>
 
 
 <body id="bootstrap-override">
-
     <div class="container">
+
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
@@ -23,14 +22,42 @@
             <h3 class="text-muted">Nerbs - A Twitter App made with Python and Flask</h3>
         </div>
 
+        <section>
+            <form class="form-horizontal" method="POST" action="/addPost">
+                <fieldset>
+                    <!-- Form Name -->
+                    <legend>Create Your Post</legend>
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-1 control-label" for="txtTitle">Title</label>
+                        <div class="col-md-11">
+                            <input id="txtTitle" name="inputTitle" type="text" placeholder="Enter title here" class="form-control input-md">
+                        </div>
+                    </div>
+                    <!-- Textarea -->
+                    <div class="form-group">
+                        <label class="col-md-1 control-label" for="txtPost">Post</label>
+                        <div class="col-md-11">
+                            <textarea class="form-control" id="txtPost" name="inputDescription" placeholder="Enter text here"></textarea>
+                        </div>
+                    </div>
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-1 control-label" for="singlebutton"></label>
+                        <div class="col-md-11">
+                            <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Publish">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+
+<!--
         <div id="jumbotron" class="jumbotron">
             <h1 id="nerbs-title">Nerbs Twitter App</h1>
             <form class="form-signin">
             <h5>Blog</h5>
             <h6>Add New Post</h6>
-             <!--  <label for="inputName" class="sr-only">Name</label>
-              <input type="name" name="inputName" id="inputName" class="form-control" placeholder="Name" required autofocus>
-              <button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="button">Sign up</button> -->
             </form>
         </div>
 
@@ -55,12 +82,18 @@
                 <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
             </div>
         </div>
+-->
 
         <footer class="footer">
             <p>&copy; CoxDev, LLC 2017</p>
         </footer>
     </div>
 
+    <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
     <script type="text/javascript" src="../static/js/user-page.js"></script>
 
 </body>
