@@ -107,22 +107,6 @@ END$$
 DELIMITER ;
 
 
-!!!! MAY OR MAY NOT NEED THIS !!!!! the `if select exists` above may do this???
-***************************************************************************
-***********  STORED PROCEDURE TO VALIDATE USERNAME TO DATABASE  ************
-***************************************************************************
-
-DELIMITER $$
-CREATE DEFINER=`shaun`@`localhost` PROCEDURE `sp_validateLogin`(
-IN p_username VARCHAR(20)
-)
-BEGIN
-    select * from tbl_user where username = p_username;
-END$$
-DELIMITER ;
-
-
-!!!!!! VERSION 2 !!!!!!
 ***************************************************************************
 **********  STORED PROCEDURE TO PROCURE USER_ID FROM DATABASE  ************
 ***************************************************************************
@@ -171,9 +155,23 @@ END$$
 DELIMITER ;
 
 
+***************************************************************************
+********  STORED PROCEDURE TO GET POST BY USER FROM TO DATABASE  **********
+***************************************************************************
 
+USE `twitter`;
+DROP procedure IF EXISTS `sp_getPostsByUser`;
+ 
+DELIMITER $$
+USE `twitter`$$
+CREATE PROCEDURE `sp_getPostsByUser` (
+IN p_user_id BIGINT
+)
+BEGIN
+    select * from posts where user_id = p_user_id;
+END$$
 
-
+DELIMITER ;
 
 
 

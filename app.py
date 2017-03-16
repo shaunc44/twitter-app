@@ -32,36 +32,11 @@ def showUserPage():
 	return render_template('user-page.html')
 
 
-# @app.route('/addPost', methods=['POST'])
-# def addPost():
-# 	# try:
-# 	if session.get('username'):
-# 		_title = request.form['inputTitle']
-# 		_description = request.form['inputDescription']
-# 		_username = session.get('username')
-# 		# if request.form.get('filePath') is None:
-# 		# 	_filePath = ''
-# 		# else:
-# 		# 	_filePath = request.form.get('filePath')
-
-# 		conn = mysql.connect()
-# 		cursor = conn.cursor()
-# 		cursor.callproc('sp_addPost',(_title,_description,_username))
-# 		data = cursor.fetchall()
-
-	# 		if len(data) is 0:
-	# 			conn.commit()
-	# 			# return render_template('user-page.html')
-	# 			return redirect('/addPost')
-	# 		else:
-	# 			return render_template('error.html',error = 'An error occurred!')
-	# 	else:
-	# 		return render_template('error.html',error = 'Unauthorized Access')
-	# except Exception as e:
-	# 	return render_template('error.html',error = str(e))
-	# else:
-	# 	cursor.close()
-	# 	conn.close()
+#From Kenso's twitter app
+# @app.route("/")
+# def server_frontpage():
+# 	tweets = model.Tweet.publ()
+# 	return render_template("index.html", tweets = tweets)
 
 
 @app.route('/addPost', methods=['POST'])
@@ -92,6 +67,72 @@ def addPost():
 	else:
 		cursor.close()
 		conn.close()
+
+
+@app.route('/getPostsByUser')
+def getPost():
+	try:
+		if session.get('username'):
+			_username = session.get('username')
+
+			con = mysql.connect()
+			cursor = con.cursor()
+			cursor.callproc('sp_getPostsByUser',(_username,))
+			posts = cursor.fetchall()
+
+			posts_dict = []
+			for post in posts:
+				post_dict = {
+					'Id': post[0],
+					'Title': post[3],
+					'Text': post[4],
+					'Date': post[2]
+				}
+				posts_dict.append(post_dict)
+
+			return json.dumps(posts_dict)
+		else:
+			return render_template('error.html', error = 'Unauthorized Access')
+	except Exception as e:
+		return render_template('error.html', error = str(e))
+
+
+# @app.route('/getpost',methods=['POST'])
+# def getpost():
+# 	try:
+# 		if session.get('user'):
+# 			_user = session.get('user')
+# 			_limit = pageLimit
+# 			_offset = request.form['offset']
+# 			_total_records = 0
+
+# 			con = mysql.connect()
+# 			cursor = con.cursor()
+# 			cursor.callproc('sp_GetpostByUser',(_user,_limit,_offset,_total_records))
+# 			postes = cursor.fetchall()
+# 			cursor.close()
+
+# 			cursor = con.cursor()
+# 			cursor.execute('SELECT @_sp_GetpostByUser_3');
+# 			outParam = cursor.fetchall()
+
+# 			response = []
+# 			postes_dict = []
+# 			for post in postes:
+# 			    post_dict = {
+# 			            'Id': post[0],
+# 			            'Title': post[1],
+# 			            'Description': post[2],
+# 			            'Date': post[4]}
+# 			    postes_dict.append(post_dict)
+# 			response.append(postes_dict)
+# 			response.append({'total':outParam[0][0]}) 
+
+# 			return json.dumps(response)
+# 		else:
+# 			return render_template('error.html', error = 'Unauthorized Access')
+# 	except Exception as e:
+# 		return render_template('error.html', error = str(e))
 
 
 #This just enters user info into the DB
@@ -125,17 +166,7 @@ def signUp():
 				cursor.close()
 				conn.close()
 				return redirect('/showUserPage')
-				# user_id = cursor.execute('SELECT user_id FROM users WHERE username = ?;', (_username,))
-				# session['user_id'] = user_id
-				# session['user_id'] = cursor.lastrowid
-			#this is not right
-		# elif len(data) is 0:
-		# 	conn.commit()
-		# 	session['username'] = data[0][0]
-		# 	return redirect('/showUserPage')
-		# elif len(data) > 0:
-		# 	session['username'] = data[0][0]
-		# 	return redirect('/showUserPage')
+
 			else:
 				return json.dumps({'error':str(data[0])})
 		else:
@@ -145,81 +176,6 @@ def signUp():
 	else:
 		cursor.close()
 		conn.close()
-
-
-#WORKING VERSION
-#This just enters user info into the DB
-# @app.route('/signUp', methods=['POST','GET'])
-# def signUp():
-# 	try:
-# 		_username = request.form['inputUsername']
-
-# 		# validate the received values
-# 		if _username:
-# 			# All Good, let's call MySQL
-# 			conn = mysql.connect()
-# 			cursor = conn.cursor()
-# 			cursor.callproc('sp_createUser',(_username,))
-# 			data = cursor.fetchall()
-# 			# print (data)
-# 			session['username'] = data[0][0]
-# 			# user_id = cursor.execute('SELECT user_id FROM users WHERE username = ?;', (_username,))
-# 			session['user_id'] = user_id
-# 			# session['user_id'] = cursor.lastrowid
-
-# 			#this is not right
-# 			if len(data) is 0:
-# 				conn.commit()
-# 				return redirect('/showUserPage')
-# 			elif len(data) > 0:
-# 				return redirect('/showUserPage')
-# 			else:
-# 				return json.dumps({'error':str(data[0])})
-# 		else:
-# 			return json.dumps({'html':'<span>Enter the required fields</span>'})
-# 	except Exception as e:
-# 		return json.dumps({'error':str(e)})
-# 	else:
-# 		cursor.close()
-# 		conn.close()
-
-
-
-# MAYBE CREATE A NEW STORED PROCEDURE FOR THIS ????
-# 1. Verify username to `users` table of DB
-#	a. query `users` table of DB for username
-#	b. if username DOES NOT exists
-#		i.  add username to DB
-#		ii. send user to their blank user page
-#	c. username DOES exists
-#		i.  retrieve user posts from `posts` table of DB
-#		ii. send user to existing user page
-
-
-#POST signup data to the signup method
-# @app.route('/logIn', methods = ['POST'])
-# def logIn():
-
-# 	_username = request.form['inputUsername']
-
-# 	conn = mysql.connect()
-# 	cursor = conn.cursor()
-# 	cursor.callproc('sp_createUser',(_username,))
-# 	#maybe change createUser to validateUser???
-# 	data = cursor.fetchall()
-
-# 	if len(data) is 0:
-# 		conn.commit()
-# 		return json.dumps({'message':'User created successfully !'})
-# 	elif len(data) > 0:
-# 		session['user'] = data[0][0]
-# 		return redirect('/showUserPage')
-# 		#how to link valid user to `posts` table ???????
-# 	else:
-# 		return json.dumps({'html':'<span>Enter the required fields</span>'})
-
-# 	cursor.close()
-# 	conn.close()
 
 
 if __name__ == "__main__":

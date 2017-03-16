@@ -39,13 +39,12 @@
             <div class="col-lg-12">
                 <div id=core>
                     {% block dynamic %}
-                    <h3>What's Trending</h3>
+                    <h3>Nerbs Twitter Feed</h3>
                     <!-- Change tweets in app.py or model.py that SELECTS text from tweets -->
                     <ul>
-                        <li>{{t1}}</li>
-                        <li>{{t2}}</li>
-                        <li>{{t3}}</li>
-                        <li>{{t4}}</li>
+                        {% for tweet in tweet %}
+                        <li>{{ tweet[0] }}</li>
+                        {% endfor %}
                     </ul>
                     {% endblock %}
                 </div>
