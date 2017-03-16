@@ -5,6 +5,7 @@ from flaskext.mysql import MySQL
 
 mysql = MySQL()
 app = Flask(__name__, static_url_path='/static')
+#Don't store the secret key this way (always store in separate)
 app.secret_key = 'tobeornottobeasecretkey'
 
 
@@ -93,40 +94,6 @@ def addPost():
 		conn.close()
 
 
-
-# ORIGINAL
-# @app.route('/addPost', methods=['POST'])
-# def addPost():
-# 	try:
-# 		if session.get('username'):
-# 			_title = request.form['inputTitle']
-# 			_description = request.form['inputDescription']
-# 			_username = session.get('username')
-# 			if request.form.get('filePath') is None:
-# 				_filePath = ''
-# 			else:
-# 				_filePath = request.form.get('filePath')
-
-# 			conn = mysql.connect()
-# 			cursor = conn.cursor()
-# 			cursor.callproc('sp_addPost',(_title,_description,_username,_filePath))
-# 			data = cursor.fetchall()
-
-# 			if len(data) is 0:
-# 				conn.commit()
-# 				# return render_template('user-page.html')
-# 				return redirect('/showUserPage')
-# 			else:
-# 				return render_template('error.html',error = 'An error occurred!')
-# 		else:
-# 			return render_template('error.html',error = 'Unauthorized Access')
-# 	except Exception as e:
-# 		return render_template('error.html',error = str(e))
-# 	else:
-# 		cursor.close()
-# 		conn.close()
-
-
 #This just enters user info into the DB
 @app.route('/signUp', methods=['POST','GET'])
 def signUp():
@@ -138,17 +105,37 @@ def signUp():
 			# All Good, let's call MySQL
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			cursor.callproc('sp_createUser',(_username,))
+			cursor.callproc('sp_validateLogin',(_username,))
 			data = cursor.fetchall()
-			session['username'] = data[0][0]
-			session['user_id'] = cursor.lastrowid
 
-			#this is not right
-			if len(data) is 0:
+			if len(data) > 0:
+				session['user'] = _username
+				session['user_id'] = data[0][0]
+				cursor.close()
+				conn.close()
+				return redirect('/showUserPage')
+
+			elif len(data) is 0:
+				cursor.callproc('sp_createUser',(_username,))
 				conn.commit()
+				cursor.callproc('sp_validateLogin',(_username,))
+				data = cursor.fetchall()
+				session['user'] = _username
+				session['user_id'] = data[0][0]
+				cursor.close()
+				conn.close()
 				return redirect('/showUserPage')
-			elif len(data) > 0:
-				return redirect('/showUserPage')
+				# user_id = cursor.execute('SELECT user_id FROM users WHERE username = ?;', (_username,))
+				# session['user_id'] = user_id
+				# session['user_id'] = cursor.lastrowid
+			#this is not right
+		# elif len(data) is 0:
+		# 	conn.commit()
+		# 	session['username'] = data[0][0]
+		# 	return redirect('/showUserPage')
+		# elif len(data) > 0:
+		# 	session['username'] = data[0][0]
+		# 	return redirect('/showUserPage')
 			else:
 				return json.dumps({'error':str(data[0])})
 		else:
@@ -158,6 +145,43 @@ def signUp():
 	else:
 		cursor.close()
 		conn.close()
+
+
+#WORKING VERSION
+#This just enters user info into the DB
+# @app.route('/signUp', methods=['POST','GET'])
+# def signUp():
+# 	try:
+# 		_username = request.form['inputUsername']
+
+# 		# validate the received values
+# 		if _username:
+# 			# All Good, let's call MySQL
+# 			conn = mysql.connect()
+# 			cursor = conn.cursor()
+# 			cursor.callproc('sp_createUser',(_username,))
+# 			data = cursor.fetchall()
+# 			# print (data)
+# 			session['username'] = data[0][0]
+# 			# user_id = cursor.execute('SELECT user_id FROM users WHERE username = ?;', (_username,))
+# 			session['user_id'] = user_id
+# 			# session['user_id'] = cursor.lastrowid
+
+# 			#this is not right
+# 			if len(data) is 0:
+# 				conn.commit()
+# 				return redirect('/showUserPage')
+# 			elif len(data) > 0:
+# 				return redirect('/showUserPage')
+# 			else:
+# 				return json.dumps({'error':str(data[0])})
+# 		else:
+# 			return json.dumps({'html':'<span>Enter the required fields</span>'})
+# 	except Exception as e:
+# 		return json.dumps({'error':str(e)})
+# 	else:
+# 		cursor.close()
+# 		conn.close()
 
 
 
@@ -196,86 +220,6 @@ def signUp():
 
 # 	cursor.close()
 # 	conn.close()
-
-
-
-#EXAMPLE #2
-#POST signup data to the signup method
-# @app.route('/logIn', methods = ['POST', 'GET'])
-# def logIn():
-# 	try:
-# 		_username = request.form['inputUsername']
-
-# 		conn = mysql.connect()
-# 		cursor = conn.cursor()
-# 		cursor.callproc('sp_createUser',(_username,)) #maybe change createUser to validateUser???
-# 		data = cursor.fetchall()
-
-# 		if len(data) > 0:
-# 			session['user'] = data[0][0]
-# 			return redirect('/showUserPage')
-# 			#how to link valid user to `posts` table ???????
-# 		else:
-# 			return json.dumps({'html':'<span>Enter the required fields</span>'})
-# 	finally:
-# 		cursor.close()
-# 		conn.close()
-
-
-
-
-
-		# if _name and _email and _password:
-	# 	if _username:
-	# 		#Call MySQL
-	# 		conn = mysql.connect()
-	# 		cursor = conn.cursor()
-	# 		cursor.callproc('sp_createUser',(_username,))
-	# 		data = cursor.fetchall()
-
-	# 		if len(data) is 0:
-	# 			conn.commit()
-	# 			return json.dumps({'message':'User created successfully !'})
-	# 		else:
-	# 			return json.dumps({'error':str(data[0])})
-	# 	else:
-	# 		return json.dumps({'html':'<span>Enter the required fields</span>'})
-	# except Exception as e:
-	# 	return json.dumps({'error':str(e)})
-	# else:
-	# 	cursor.close()
-	# 	conn.close()
-
-
-
-
-#EXAMPLE #1
-#POST signup data to the signup method
-# @app.route('/logIn', methods = ['POST', 'GET'])
-# def logIn():
-# 	try:
-# 		_username = request.form['inputUsername']
-
-# 		# if _name and _email and _password:
-# 		if _username:
-# 			#Call MySQL
-# 			conn = mysql.connect()
-# 			cursor = conn.cursor()
-# 			cursor.callproc('sp_createUser',(_username))
-# 			data = cursor.fetchall()
-
-# 			if len(data) is 0:
-# 				conn.commit()
-# 				return json.dumps({'message':'User created successfully !'})
-# 			else:
-# 				return json.dumps({'error':str(data[0])})
-# 		else:
-# 			return json.dumps({'html':'<span>Enter the required fields</span>'})
-# 	except Exception as e:
-# 		return json.dumps({'error':str(e)})
-# 	else:
-# 		cursor.close()
-# 		conn.close()
 
 
 if __name__ == "__main__":

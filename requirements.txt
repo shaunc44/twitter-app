@@ -13,6 +13,7 @@
 -- ---
 
 
+
 ***************************************************************************
 *************************   SET UP SQL TABLES   ***************************
 ***************************************************************************
@@ -20,8 +21,8 @@
 DROP TABLE IF EXISTS `twitter`.`users`;
 		
 CREATE TABLE `twitter`.`users` (
-  `user_id` BIGINT AUTO_INCREMENT,
-  `username` VARCHAR(25) NULL,
+  `user_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(25),
   PRIMARY KEY (`user_id`)
 );
 
@@ -33,11 +34,11 @@ CREATE TABLE `twitter`.`users` (
 DROP TABLE IF EXISTS `twitter`.`posts`;
 		
 CREATE TABLE `twitter`.`posts` (
-  `post_id` BIGINT AUTO_INCREMENT,
-  `user_id` BIGINT,
-  `date` DATE NULL,
-  `title` VARCHAR(50) NULL DEFAULT NULL,
-  `text` VARCHAR(100) NULL DEFAULT NULL,
+  `post_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `date` DATE,
+  `title` VARCHAR(50),
+  `text` VARCHAR(100),
   PRIMARY KEY (`post_id`)
 );
 
@@ -45,7 +46,19 @@ CREATE TABLE `twitter`.`posts` (
 -- Foreign Keys 
 -- ---
 
-ALTER TABLE `posts` ADD FOREIGN KEY (user_id) REFERENCES `users` (`user_id`);
+**** Use this one ****
+ALTER TABLE posts 
+ADD CONSTRAINT FK_posts 
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+ON UPDATE CASCADE
+ON DELETE CASCADE;
+
+
+**** Not this one ****
+ALTER TABLE `posts` 
+ADD CONSTRAINT FK_posts 
+FOREIGN KEY (user_id) REFERENCES `users` (`user_id`);
+
 
 -- ---
 -- Table Properties
@@ -105,6 +118,21 @@ IN p_username VARCHAR(20)
 )
 BEGIN
     select * from tbl_user where username = p_username;
+END$$
+DELIMITER ;
+
+
+!!!!!! VERSION 2 !!!!!!
+***************************************************************************
+**********  STORED PROCEDURE TO PROCURE USER_ID FROM DATABASE  ************
+***************************************************************************
+
+DELIMITER $$
+CREATE DEFINER=`shaun`@`localhost` PROCEDURE `sp_validateLogin`(
+IN p_username VARCHAR(20)
+)
+BEGIN
+    select user_id from users where username = p_username;
 END$$
 DELIMITER ;
 
