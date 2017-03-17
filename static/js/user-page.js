@@ -1,3 +1,4 @@
+// Is this necessary anymore????
 $(document).ready(function(){
     $('#fileupload').fileupload({
         url: 'upload',

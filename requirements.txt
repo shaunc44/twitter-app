@@ -108,7 +108,7 @@ DELIMITER ;
 
 
 ***************************************************************************
-**********  STORED PROCEDURE TO PROCURE USER_ID FROM DATABASE  ************
+************  STORED PROCEDURE TO GET USER_ID FROM DATABASE  **************
 ***************************************************************************
 
 DELIMITER $$
@@ -156,7 +156,7 @@ DELIMITER ;
 
 
 ***************************************************************************
-********  STORED PROCEDURE TO GET POST BY USER FROM TO DATABASE  **********
+********  STORED PROCEDURE TO GET_POSTS_BY_USER FROM TO DATABASE  *********
 ***************************************************************************
 
 USE `twitter`;

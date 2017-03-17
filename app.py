@@ -43,20 +43,18 @@ def showUserPage():
 def addPost():
 	try:
 		if session.get('username'):
+			# _username = session.get('username')
+			_user_id = session.get('user_id')
 			_title = request.form['inputTitle']
 			_text = request.form['inputDescription']
-			_username = session.get('username')
-			_user_id = session.get('user_id')
 
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			# _user
 			cursor.callproc('sp_addPost',(_user_id, _title, _text))
 			data = cursor.fetchall()
 
 			if len(data) is 0:
 				conn.commit()
-				# return render_template('user-page.html')
 				return redirect('/showUserPage')
 			else:
 				return render_template('error.html',error = 'An error occurred!')
@@ -70,14 +68,16 @@ def addPost():
 
 
 @app.route('/getPostsByUser')
-def getPost():
+def getPostsByUser():
 	try:
-		if session.get('username'):
-			_username = session.get('username')
+		if session.get('user_id'):
+			_user_id = session.get('user_id')
+		# if session.get('username'):
+		# 	_username = session.get('username')
 
 			con = mysql.connect()
 			cursor = con.cursor()
-			cursor.callproc('sp_getPostsByUser',(_username,))
+			cursor.callproc('sp_getPostsByUser',(_user_id,))
 			posts = cursor.fetchall()
 
 			posts_dict = []
