@@ -52,12 +52,7 @@
             </form>
         </section>
 
-        <div class="list-group">
-            <a href="#" class="list-group-item active">
-                <h4 class="list-group-item-heading">Title</h4>
-                <p class="list-group-item-text">Text</p>
-            </a>
-        </div>
+        <div class="list-group"></div>
 
 
 
@@ -97,11 +92,22 @@
         </footer>
     </div>
 
+    <script id="tweetList" type="text/mustache">
+        <%#.%> <!-- . references the current obj -->
+        <a href="#" class="list-group-item active">
+            <h4 class="list-group-item-heading"><%Title%></h4>
+            <p class="list-group-item-text"><%Text%></p>
+        </a>
+        <%/.%>
+    </script>
+
+
     <script type="text/javascript" src="../static/js/jquery-3.1.1.js"></script>
     <script type="text/javascript" src="../static/js/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
     <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
     <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
     <script type="text/javascript" src="../static/js/user-page.js"></script>
     <script type="text/javascript" src="../static/js/get-user-posts.js"></script>
 

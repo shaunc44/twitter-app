@@ -1,20 +1,18 @@
 $(document).ready(function(){
+
+    Mustache.tags = [ '<%', '%>' ];
+
     $.ajax({
         url : '/getPostsByUser',
-        type : 'GET',
-        success: function(response){
-            var div = $('<div>').attr('class', 'list-group').append($('<a>').attr('class', 'list-group-item active').append($('<h4>').attr('class', 'list-group-item-heading'),
-                $('<p>').attr('class', 'list-group-item-text')));
-
-            var postsObj = JSON.parse(response);
-            var posts = '';
-
-            $.each(postsObj,function(index, value){
-                posts = $(div).clone();
-                $(posts).find('h4').text(value.Title);
-                $(posts).find('p').text(value.Text);
-                $('.list-group').append(posts);
-            });
+        method : 'GET',
+        dataType: 'json',
+        success: function(data){
+            // MUSTACHE.JS
+            var template = $("#tweetList").html();
+            // console.log("Template: ", template);
+            var render = Mustache.render(template, data);
+            // console.log("Render: ", render);
+            $(".list-group").html(render);
         },
         error: function(error){
             console.log(error);
