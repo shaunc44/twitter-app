@@ -11,8 +11,6 @@ $(document).ready(function(){
 
 
 
-
-
 // $(document).ready(function() {
 //     $('#btnSignUp').click(function(){
 //         $.ajax({

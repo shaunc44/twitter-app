@@ -6,6 +6,7 @@
     <title>Nerbs - A Twitter Clone</title>
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Tangerine:700" rel="stylesheet"> 
     <link href="{{ url_for('static', filename='css/user-page.css') }}" rel="stylesheet">
 </head>
 
@@ -52,52 +53,33 @@
             </form>
         </section>
 
+        <!-- . references the current object -->
+        <div id="username-header-html"></div>
+
         <div class="list-group"></div>
-
-
-
-
-<!--
-        <div class="row marketing">
-            <div class="col-lg-12">
-                <div id=core>
-                    {% block dynamic %}
-                    <h3>Nerbs Twitter Feed</h3>
-                    <ul>
-                        <li>{{t1}}</li>
-                        <li>{{t2}}</li>
-                        <li>{{t3}}</li>
-                        <li>{{t4}}</li>
-                    </ul>
-                    {% endblock %}
-                </div>
-
-                <h4>Nerbs Twitter Feed</h4>
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-
-                <h4>Nerbs Twitter Feed</h4>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-                <h4>Nerbs Twitter Feed</h4>
-                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-                <h4>Nerbs Twitter Feed</h4>
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-            </div>
-        </div>
--->
 
         <footer class="footer">
             <p>&copy; CoxDev, LLC 2017</p>
         </footer>
+
     </div>
 
+
+    <script id="username-header-scrpt" type="text/mustache">
+        <%#.%> <!--  '.' references the current object -->
+            <a href='#'>
+                <div><%Username%>'s Tweets</div>
+            </a>
+        <%/.%>
+    </script>
+
+
     <script id="tweetList" type="text/mustache">
-        <%#.%> <!-- . references the current obj -->
-        <a href="#" class="list-group-item active">
-            <h4 class="list-group-item-heading"><%Title%></h4>
-            <p class="list-group-item-text"><%Text%></p>
-        </a>
+        <%#.%> <!-- . references the current object -->
+            <a href="#" class="list-group-item active">
+                <h4 class="list-group-item-heading"><%Title%></h4>
+                <p class="list-group-item-text"><%Text%></p>
+            </a>
         <%/.%>
     </script>
 

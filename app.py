@@ -71,6 +71,7 @@ def addPost():
 def getPostsByUser():
 	try:
 		if session.get('user_id'):
+			_username = session.get('username')
 			_user_id = session.get('user_id')
 		# if session.get('username'):
 		# 	_username = session.get('username')
@@ -83,6 +84,7 @@ def getPostsByUser():
 			posts_dict = []
 			for post in posts:
 				post_dict = {
+					'Username': _username,
 					'Id': post[0],
 					'Title': post[3],
 					'Text': post[4],
