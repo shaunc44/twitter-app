@@ -84,8 +84,6 @@ def getPostsByUser():
 		if session.get('user_id'):
 			_username = session.get('username')
 			_user_id = session.get('user_id')
-		# if session.get('username'):
-		# 	_username = session.get('username')
 
 			con = mysql.connect()
 			cursor = con.cursor()
@@ -93,9 +91,8 @@ def getPostsByUser():
 			posts = cursor.fetchall()
 
 			posts_dict = []
-			for post in posts:
+			for post in reversed(posts):
 				post_dict = {
-					# 'Username': _username,
 					'Id': post[0],
 					'Title': post[3],
 					'Text': post[4],
