@@ -4,7 +4,7 @@ $(document).ready(function(){
     Mustache.tags = [ '<%', '%>' ];
 
     $.ajax({
-        url : '/getPostsByUser',
+        url : '/getUsername',
         method : 'GET',
         dataType: 'json',
         success: function(data){
@@ -12,12 +12,23 @@ $(document).ready(function(){
             // Username display
             var usernameTemplate = $("#username-header-scrpt").html();
             var usernameRender = Mustache.render(usernameTemplate, data);
-            $("#username-header-html").html(usernameRender);
+            $(".username-header-html").html(usernameRender);
+        },
+        error: function(error){
+            console.log(error);
+        }
+    });
+
+    $.ajax({
+        url : '/getPostsByUser',
+        method : 'GET',
+        dataType: 'json',
+        success: function(data){
+            // MUSTACHE.JS
             // Tweets diplay
             var tweetsTemplate = $("#tweetList").html();
             var tweetsRender = Mustache.render(tweetsTemplate, data);
             $(".list-group").html(tweetsRender);
-
         },
         error: function(error){
             console.log(error);

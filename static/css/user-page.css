@@ -33,7 +33,7 @@ body {
     background-color: seagreen;
 }
 
-#bootstrap-override #username-header-html {
+#bootstrap-override .username-header-html {
     font-family: 'Tangerine', cursive;
 }
 

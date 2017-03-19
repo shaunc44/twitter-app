@@ -67,6 +67,17 @@ def addPost():
 		conn.close()
 
 
+@app.route('/getUsername')
+def getUsername():
+	_username = session.get('username')
+	uname = {
+		'Username': _username
+	}
+	uname_dict =[]
+	uname_dict.append(uname)
+	return json.dumps(uname_dict)
+
+
 @app.route('/getPostsByUser')
 def getPostsByUser():
 	try:
@@ -84,7 +95,7 @@ def getPostsByUser():
 			posts_dict = []
 			for post in posts:
 				post_dict = {
-					'Username': _username,
+					# 'Username': _username,
 					'Id': post[0],
 					'Title': post[3],
 					'Text': post[4],
@@ -152,7 +163,7 @@ def signUp():
 			data = cursor.fetchall()
 
 			if len(data) > 0:
-				session['user'] = _username
+				session['username'] = _username
 				session['user_id'] = data[0][0]
 				cursor.close()
 				conn.close()
@@ -163,7 +174,7 @@ def signUp():
 				conn.commit()
 				cursor.callproc('sp_validateLogin',(_username,))
 				data = cursor.fetchall()
-				session['user'] = _username
+				session['username'] = _username
 				session['user_id'] = data[0][0]
 				cursor.close()
 				conn.close()
