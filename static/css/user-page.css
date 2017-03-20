@@ -23,10 +23,20 @@ body {
     text-align: left;
 }
 
+#bootstrap-override .tweet-date {
+    text-align: right;
+}
+
 #bootstrap-override .list-group-item {
+    height: 67px;
     margin-bottom: 10px;
     border-radius: 4px;
+    padding-top: 5px;
     background-color: darkblue;
+}
+
+#bootstrap-override .list-group-item-heading {
+    padding-top: 5px;
 }
 
 #bootstrap-override #singlebutton {

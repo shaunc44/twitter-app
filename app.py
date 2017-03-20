@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, g, json, request, redirect, url_for, flash
 from flaskext.mysql import MySQL
+import datetime
 # from werkzeug import generate_password_hash, check_password_hash #Do I need this anymore?
 
 
@@ -92,11 +93,12 @@ def getPostsByUser():
 
 			posts_dict = []
 			for post in reversed(posts):
+				print (type(post[2]))
 				post_dict = {
 					'Id': post[0],
 					'Title': post[3],
 					'Text': post[4],
-					'Date': post[2]
+					'Date': post[2].strftime("%a, %b %d, %Y")
 				}
 				posts_dict.append(post_dict)
 
